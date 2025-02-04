@@ -39,7 +39,7 @@ img[alt~="title-image"] {
 
 ![title-image](./img/logo-Cech++-final-cropped.jpg)
 
-Ale taky profiling obecně
+And profiling in general
 
 ---
 
@@ -48,62 +48,15 @@ Ale taky profiling obecně
 
 ![logo](../img/edhouse_logo.png)
 
-## %Agenda%
+## TOC
 
-%Bod krátkého vysvětlení o čem bude tato prezentace%
+1. Story - the origin of this talk
 
-%Bod krátkého vysvětlení o čem bude tato prezentace%
+1. Tracy - what is it, how to use it
 
-%Bod krátkého vysvětlení o čem bude tato prezentace%
+1. Demo
 
-1. %Titulek části prezentace%
-2. %Titulek části prezentace%
-3. %Titulek části prezentace%
-
----
-
-<!-- _footer: %Speciální zápatí pro tento slide, např. linkedin username% -->
-
-![logo](../img/edhouse_logo.png)
-
-![bg width:350px left:33%](../img/portrait_placeholder.svg)
-
-## %Autor%
-
-<style>
-img[alt~="author-secondary"] {
-  position: absolute;
-  top: 450px;
-  right: 100px;
-  width: 200px
-}
-</style>
-
-- %Bod představení autora%
-- %Bod představení autora%
-- %Bod představení autora%
-- %Bod představení autora%
-
-![author-secondary](../img/image_placeholder.svg)
-
----
-
-## %Slide s obrázkem a textem%
-
-%Prvních několik bodů%:
-
-- %Bod%
-- %Bod%
-- %Bod%
-
-%Dalších několik bodů%:
-
-- %Bod%
-- %Bod%
-- %Bod%
-
-![bg left:33% width:300px](../img/image_placeholder.svg)
-![logo](../img/edhouse_logo.png)
+1. Sources
 
 ---
 
@@ -118,99 +71,136 @@ img[alt~="qr"] {
 
 ![logo](../img/edhouse_logo.png)
 
-## 1. %Titulek části prezentace%
+## Story of Jindra & Pavel
 
-%Podtitulek, pokud je potřeba%
+### Jindra - searching for a profiling tool
 
----
-
-![logo](../img/edhouse_logo.png)
-
-## %Slide pouze s kódem%
-
-```rust
-fn f(n_container: Arc<Mutex<i32>>) {
-    let mut n_ref = n_container.lock().expect("Lock is not poisoned");
-    *n_ref += 1;
-}
-
-fn main() {
-    let n_container = Arc::new(Mutex::new(0i32));
-    let container_clone = n_container.clone();
-    let my_thread = std::thread::spawn(move || {
-        f(container_clone);
-    });
-    _ = my_thread.join();
-    let n_ref = n_container.lock().expect("Lock not poisoned");
-    println!("{}", *n_ref);
-}
-```
+### Pavel - having a good profiling tool
 
 ---
-
-## %Slide pouze s textem%
-
-![logo](../img/edhouse_logo.png)
-
-- %První bod textu%
-- %Druhý bod textu%
-- %Bod s pododrážkami%
-  - %První pododrážka, kde jsou i výrazy z kódu jako `while`, `int` a `foreach`%
-  - %Druhá pododrážka, kde jsou i emoji 🎤, 🔊, 💯%
-- %Poslední bod textu%
-
----
-
-## %Slide s textem a plovoucím obrázkem%
-
-![logo](../img/edhouse_logo.png)
 
 <style>
-img[alt~="floating-image"] {
+img[alt~="qr"] {
   position: absolute;
-  top: 390px;
-  right: 140px;
+  top: 240px;
+  right: 500px;
   width: 250px
 }
 </style>
 
-- %První bod textu%
-- %Druhý bod textu%
-- %Bod s pododrážkami%
-  - %První pododrážka
-  - %Druhá pododrážka
-- %Poslední bod textu%
+![logo](../img/edhouse_logo.png)
 
-![floating-image](../img/image_placeholder.svg)
+## Tracy
+
+*Profiling tool worth trying*
+
+* sample based profiling tools / instrumentation based
+  * automatic instrumentation
+* Tracy can do both but the latter is more interesting
+* Super easy setup (in C++)
+* Low latency (they say)
+* Nice visualization tool (a bit slowish though)
 
 ---
 
-![logo](../img/edhouse_logo.png)
-
-## %Slide s kódem a textem%
-
-```rust
-#[derive(Serialize)]
-struct BeepEventData {
-    counter_value: u32,
+<style>
+img[alt~="qr"] {
+  position: absolute;
+  top: 240px;
+  right: 500px;
+  width: 250px
 }
-```
-
-- %První komentář kódu%
-- %Druhý komentář kódu%
-- %Třetí komentář kódu%
-
----
-
-<!-- Obrázek přes celý slide -->
-
-![bg](../img/image_placeholder.svg)
-
----
-
-<!-- Dva obrázky přes celý slide -->
+</style>
 
 ![logo](../img/edhouse_logo.png)
 
-![bg width:400px](../img/image_placeholder.svg)
-![bg height:320px](../img/image_placeholder.svg)
+## Tracy
+
+### Architecture
+
+* Client - Server
+  * Any client can be made
+* The software being profiled acts as a client
+* Server catches the traces
+* [An Introduction to Tracy Profiler in C++ - Marcos Slomp - CppCon 2023 5:20](https://youtu.be/ghXk3Bk5F2U?si=6vd4KmWLJ-yVbdgU&t=320)
+
+---
+
+<style>
+img[alt~="qr"] {
+  position: absolute;
+  top: 240px;
+  right: 500px;
+  width: 250px
+}
+</style>
+
+![logo](../img/edhouse_logo.png)
+
+## Tracy
+
+### Setup
+
+* Responsible vs guerilla approach
+* `Tracy.hpp`, `TracyClient.cpp`, `TRACY_ENABLE`
+* [An Introduction to Tracy Profiler in C++ - Marcos Slomp - CppCon 2023 15:30](https://youtu.be/ghXk3Bk5F2U?si=6vd4KmWLJ-yVbdgU&t=930)
+* Rust is a bit different story
+
+---
+
+<style>
+img[alt~="qr"] {
+  position: absolute;
+  top: 240px;
+  right: 500px;
+  width: 250px
+}
+</style>
+
+![logo](../img/edhouse_logo.png)
+
+## Tracy
+
+### Traces
+
+* ZoneScoped
+* RAII
+* [An Introduction to Tracy Profiler in C++ - Marcos Slomp - CppCon 2023 18:52](https://youtu.be/ghXk3Bk5F2U?si=6vd4KmWLJ-yVbdgU&t=1132)
+
+---
+
+<style>
+img[alt~="qr"] {
+  position: absolute;
+  top: 240px;
+  right: 500px;
+  width: 250px
+}
+</style>
+
+![logo](../img/edhouse_logo.png)
+
+## DEMO
+
+### Quant
+
+---
+
+<style>
+img[alt~="qr"] {
+  position: absolute;
+  top: 240px;
+  right: 500px;
+  width: 250px
+}
+</style>
+
+![logo](../img/edhouse_logo.png)
+
+## Sources
+
+* <https://github.com/wolfpld/tracy>
+* <https://youtu.be/ghXk3Bk5F2U?si=6vd4KmWLJ-yVbdgU> - An Introduction to Tracy Profiler in C++ - Marcos Slomp - CppCon 2023
+* <https://github.com/nagisa/rust_tracy_client> - Rust Tracy client
+* <https://github.com/marekpsenka/edhouse-marp-template> - Template of this slide deck
+* <https://github.com/tencek/talks/tree/main/tracy> - This talk
