@@ -33,11 +33,11 @@ img[alt~="title-image"] {
 }
 </style>
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
 # %Titulek prezentace%
 
-![title-image](./img/image_placeholder.svg)
+![title-image](../img/image_placeholder.svg)
 
 %Podtitulek, pokud je potřeba%
 
@@ -46,7 +46,7 @@ img[alt~="title-image"] {
 <!-- Odtud začínají být vidět čísla slidů -->
 <!-- paginate: true -->
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
 ## %Agenda%
 
@@ -64,9 +64,9 @@ img[alt~="title-image"] {
 
 <!-- _footer: %Speciální zápatí pro tento slide, např. linkedin username% -->
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
-![bg width:350px left:33%](./img/portrait_placeholder.svg)
+![bg width:350px left:33%](../img/portrait_placeholder.svg)
 
 ## %Autor%
 
@@ -84,7 +84,7 @@ img[alt~="author-secondary"] {
 - %Bod představení autora%
 - %Bod představení autora%
 
-![author-secondary](./img/image_placeholder.svg)
+![author-secondary](../img/image_placeholder.svg)
 
 ---
 
@@ -102,8 +102,8 @@ img[alt~="author-secondary"] {
 - %Bod%
 - %Bod%
 
-![bg left:33% width:300px](img/image_placeholder.svg)
-![logo](img/edhouse_logo.png)
+![bg left:33% width:300px](../img/image_placeholder.svg)
+![logo](../img/edhouse_logo.png)
 
 ---
 
@@ -116,7 +116,7 @@ img[alt~="qr"] {
 }
 </style>
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
 ## 1. %Titulek části prezentace%
 
@@ -124,7 +124,7 @@ img[alt~="qr"] {
 
 ---
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
 ## %Slide pouze s kódem%
 
@@ -150,7 +150,7 @@ fn main() {
 
 ## %Slide pouze s textem%
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
 - %První bod textu%
 - %Druhý bod textu%
@@ -163,7 +163,7 @@ fn main() {
 
 ## %Slide s textem a plovoucím obrázkem%
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
 <style>
 img[alt~="floating-image"] {
@@ -181,11 +181,11 @@ img[alt~="floating-image"] {
   - %Druhá pododrážka
 - %Poslední bod textu%
 
-![floating-image](./img/image_placeholder.svg)
+![floating-image](../img/image_placeholder.svg)
 
 ---
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
 ## %Slide s kódem a textem%
 
@@ -204,13 +204,13 @@ struct BeepEventData {
 
 <!-- Obrázek přes celý slide -->
 
-![bg](./img/image_placeholder.svg)
+![bg](../img/image_placeholder.svg)
 
 ---
 
 <!-- Dva obrázky přes celý slide -->
 
-![logo](img/edhouse_logo.png)
+![logo](../img/edhouse_logo.png)
 
-![bg width:400px](./img/image_placeholder.svg)
-![bg height:320px](./img/image_placeholder.svg)
+![bg width:400px](../img/image_placeholder.svg)
+![bg height:320px](../img/image_placeholder.svg)
