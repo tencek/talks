@@ -35,11 +35,9 @@ img[alt~="title-image"] {
 
 ![logo](../img/edhouse_logo.png)
 
-# Tracy
+# Profiling with Tracy
 
 ![title-image](./img/logo-Cech++-final-cropped.jpg)
-
-And profiling in general
 
 ---
 
