@@ -52,7 +52,7 @@ And profiling in general
 
 1. Story - the origin of this talk
 
-1. Tracy - what is it, how to use it
+1. Tracy - what it is, how to use it
 
 1. Demo
 
