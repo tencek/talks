@@ -1,8 +1,11 @@
 add_rules("mode.debug", "mode.release")
 
+add_requires("cpp-httplib")
+
 target("http-server")
     set_kind("binary")
     add_files("src/*.cpp")
+    add_packages("cpp-httplib")
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
