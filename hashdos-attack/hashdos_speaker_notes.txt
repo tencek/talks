@@ -1,0 +1,77 @@
+Slide 1: Title
+Hello everyone. Thank you for coming to this talk.
+Today I will speak about a type of vulnerability that is sometimes underestimated—HashDoS.
+We’ll start with a short story of how I got to this topic, explain what HashDoS is and how it works, 
+show a short demo of the problem, and finish with mitigation techniques in C++. 
+
+Slide 2: Table of Contents
+Here is a quick overview of what we’ll cover.
+We’ll begin with the story of hashdos origins
+Then we’ll dive into technical explanation—hashing, collisions, and the actual attack.
+Next, I’ll show a short demo using an HTTP server.
+Then we’ll focus on how to defend against it in C++.
+Finally, I’ll share a list of useful resources.
+
+Slide 3: A short story
+The term HashDoS comes from a talk at the 28th Chaos Communication Congress in 2011.
+2 researchers showed how to craft HTTP POST requests with many colliding keys.
+This caused high CPU usage in PHP, Java, Python, and other platforms.
+It led to real-world server slowdowns and emergency security patches.
+The attack was simple, powerful, and widely applicable — a wake-up call for many ecosystems.
+
+Slide 4: What is HashDoS? – Key concepts
+Let’s now define the terms.
+Hashing turns inputs like strings into a fixed-size value, like an integer.
+Collisions happen when two different inputs produce the same hash.
+Hash-based collections like `unordered_map` use hashes for quick access.
+HashDoS stands for Hash Denial of Service: it’s when an attacker sends inputs designed to produce collisions, slowing the hash table down.
+
+Slide 5: Attack Mechanism
+In normal usage, hash tables give very fast lookups.
+But if many colliding keys are inserted, the internal structure degrades—often into a linked list.
+Lookups or insertions become O(n), not O(1).
+This consumes CPU, leading to denial of service.
+
+Slide 6: Demo intro
+Now, let’s switch to a demo.
+I hoped to demonstrate the full attack, but quickly realized I'm not an experienced or motivated hacker.
+Hacking takes time, and I’m not young enough to stay up all night coding and testing.
+So instead, this will be a simulation.
+
+Slide 7: Demo setup
+The demo uses my own lightweight HTTP server based on the `httplib` header-only library.
+I’m sending requests with Postman.
+And I took advice from Michal Žamboch — we recently saw how powerful xmake is, and I used it for building this. It works great, even in VS Code.
+
+Slide 8: Collisions
+First, I’ll demonstrate that hash collisions do exist.
+This is expected—there are always more inputs than possible hash values.
+So all hash functions have collisions.
+The interesting part is how easy or hard it is to find them.
+
+Slide 9: HashDoS Simulation
+Now for the simulation of the HashDoS attack.
+I created a very naive hash function that only uses the first 6 characters.
+It’s easy to find many inputs that hash to the same value.
+We’ll see how this can be abused to create performance problems.
+
+Slide 10: Mitigations
+How do we defend against HashDoS?
+First, prefer 64-bit apps—more bits means fewer collisions.
+Second, sanitize your input. Filter values or restrict their size.
+Most importantly: seed your hash function with semi-random values. This makes it harder for attackers to precompute collisions.
+Use a secure hash like SipHash with a per-instance seed.
+
+Slide 11: C++ Associative Containers
+Let’s look at the main associative containers in C++.
+Ordered containers like map and multimap use balanced trees, so their lookup is O(log n) and not affected by hashing.
+Unordered containers like unordered_map are hash-based. They provide O(1) average lookup, but under collision-heavy scenarios, they degrade to O(n).
+This is where HashDoS becomes a real threat — only for hash-based containers.
+
+Slide 12: Resources
+If you’d like to read more, here are some resources.
+These include background on the CVE from 2011, various hash functions, and some blog posts showing how common functions can be broken.
+
+Slide 12: Thank you
+Thank you for your attention!
+I’ll be happy to answer any questions.
