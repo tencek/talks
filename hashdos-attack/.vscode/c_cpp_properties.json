@@ -2,7 +2,9 @@
     "configurations": [
         {
             "name": "xmake",
-            "compileCommands": "${workspaceFolder}/http-server/compile_commands.json",
+            "compileCommands": [
+                "${workspaceFolder}/http-server/compile_commands.json"
+            ],
             "includePath": [
                 "${workspaceFolder}/http-server/**"
             ]
