@@ -1,0 +1,28 @@
+I am going to have a talk. I want you to prepare me a slidedeck. The talk will be held in english. I am not a native speaker, so for each slide, I want you to prepare me the whole wording of what I want to say. The talk is expected to be 15-20 minutes.
+
+The title is What is a HashDoS attack and how to mitigate it in C++.
+The audience is a group of C++ developers.
+The slides will be in markdown using marp. See example - tracy.md - my previous talk.
+
+1. I would like to start with a story of where and how it all began.
+
+2. Then, there should be a technical explanation of the hashdos attack, including all the related terms. What is hashing, what are collisions, what are hash based collections, what is the mechanism of the hashdos attack.
+
+3. A short demo will follow. I will demonstrate the performance impact of simulated hash collisions. I will be using my HttpServer and the postman tool.
+
+/// The following text is a draft of what Id like to tell while demoing. Please fix the grammar for me and copz to the ouput.
+"I hoped for demonstrating the whole attack but I quickly realized I'm not an experienced and motivated hacker, hacking is time consuming process, and I'm no longer young enough to stay up all night coding and testing. So the demo will be some sort of a simulation."
+Michal Zamboch recently showd us the power of xmake. As you can see, I followed his advice and used xmake for demo and I confirm it works perfectly. It even work in vs code smoothly. I recommend trying it.
+To demo the hashdos attack, I will use a HTTP server. Im using httplib - which is a lightweight C++ HTTP server implemented ina single header file. In main, I just start the server, and here I have a two request handlers for GET requests. 
+
+"First I'd like to demonstrate the hash collisions". Nothing really interesting here. Collisions exist. All hash functions have collisions. It's all about how easy or hard it is to find them.
+
+Now the more interesting part - the hasdos attack. Better say - hash dos attack simulation. We need many collisions - many strings whose hash are the same, so called multicollision. As I was not able to collest such a list, I will simulate it. Here I have a hashing function that is poorly designed so it is easy to collect a multicollision. It only uses the first 6 characters for hashing. Let's see if I can abuse it's weakness to demonstrate the hashdos attack.
+
+Then, the most important part will be how to mitigate that using C++.
+* Use 64bit apps as they produce 64bits hashes (size_t)
+* sanitize input if possible(white list, input size limit)
+* seed / salt the hash with a semi-random input
+
+At the end, there will be a list of links from the attached links.html file
+

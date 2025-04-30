@@ -1,0 +1,63 @@
+{
+	"info": {
+		"_postman_id": "7bcd19c0-08eb-445d-965a-28d4c7b64b54",
+		"name": "hashdos-attack",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44313166",
+		"_collection_link": "https://p-9120969.postman.co/workspace/P's-Workspace~98f0220a-cb85-4463-87a2-48af6c05b634/collection/44313166-7bcd19c0-08eb-445d-965a-28d4c7b64b54?action=share&source=collection_link&creator=44313166"
+	},
+	"item": [
+		{
+			"name": "collision",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:12345/collision?8yn0iYCKYHlIj4-BwPqk=&GReLUrM4wMqfg9yzV3KQ=",
+					"host": [
+						"localhost"
+					],
+					"port": "12345",
+					"path": [
+						"collision"
+					],
+					"query": [
+						{
+							"key": "8yn0iYCKYHlIj4-BwPqk",
+							"value": ""
+						},
+						{
+							"key": "GReLUrM4wMqfg9yzV3KQ",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "hashdos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:12345/hashdos?{{params}}",
+					"host": [
+						"localhost"
+					],
+					"port": "12345",
+					"path": [
+						"hashdos"
+					],
+					"query": [
+						{
+							"key": "{{params}}",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

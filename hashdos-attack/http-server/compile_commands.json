@@ -1,0 +1,38 @@
+[
+  {
+    "directory": "C:\\dev\\tencek\\talks\\hashdos-attack\\http-server",
+    "arguments": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\cl.exe",
+      "/c",
+      "/nologo",
+      "/MD",
+      "/O2",
+      "/std:c++17",
+      "/EHsc",
+      "/IC:\\Users\\pavel.kucera\\AppData\\Local\\.xmake\\packages\\c\\cpp-httplib\\v0.20.0\\56bd812c46b14972b118aa073c3dbcb6\\include",
+      "/IC:\\Users\\pavel.kucera\\AppData\\Local\\.xmake\\packages\\x\\xxhash\\v0.8.3\\1f80dfa82dbc4d3dafb92574e067a242\\include",
+      "/DNDEBUG",
+      "/Fobuild\\.objs\\http-server\\windows\\x64\\release\\src\\main.cpp.obj",
+      "src\\main.cpp"
+    ],
+    "file": "src\\main.cpp"
+  },
+  {
+    "directory": "C:\\dev\\tencek\\talks\\hashdos-attack\\http-server",
+    "arguments": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.40.33807\\bin\\HostX64\\x64\\cl.exe",
+      "/c",
+      "/nologo",
+      "/MD",
+      "/O2",
+      "/std:c++17",
+      "/EHsc",
+      "/IC:\\Users\\pavel.kucera\\AppData\\Local\\.xmake\\packages\\c\\cpp-httplib\\v0.20.0\\56bd812c46b14972b118aa073c3dbcb6\\include",
+      "/IC:\\Users\\pavel.kucera\\AppData\\Local\\.xmake\\packages\\x\\xxhash\\v0.8.3\\1f80dfa82dbc4d3dafb92574e067a242\\include",
+      "/DNDEBUG",
+      "/Fobuild\\.objs\\http-server\\windows\\x64\\release\\src\\server.cpp.obj",
+      "src\\server.cpp"
+    ],
+    "file": "src\\server.cpp"
+  }
+]
