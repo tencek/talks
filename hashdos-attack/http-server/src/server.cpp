@@ -54,10 +54,10 @@ public:
         const auto now = std::chrono::system_clock::now().time_since_epoch().count();
         XXH3_generateSecret(secret, sizeof(secret), &now, sizeof(now));
     }
-    size_t operator()(const std::string &x) const
+    size_t operator()(const std::string &str) const
     {
         return size_t{
-            XXH3_64bits_withSecret(x.c_str(), x.length(), secret, sizeof(secret))};
+            XXH3_64bits_withSecret(str.c_str(), str.length(), secret, sizeof(secret))};
     }
 };
 
