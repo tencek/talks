@@ -50,19 +50,16 @@ img[alt~="title-image"] {
 2. What is HashDoS? – theory & terms
 3. Demo
 4. Mitigation in C++
-5. Resources & links
 
 ---
 
-# 1. A short story
+### How HashDoS came to light
 
-### The origin of HashDoS
-
-- ⚠️ First disclosed publicly in **2011**
-- Demonstrated by **Alexander Klink & Julian Wälde** at 28C3
-- Affected major platforms: **PHP, Python, Java, ASP.NET…**
-- Real-world risk: **web servers unresponsive** with small crafted payloads
-- Prompted emergency security patches in major ecosystems
+- In **2011**, admins noticed strange slowdowns
+- Investigation revealed excessive CPU usage caused by hash collisions  
+- Root cause: predictable hash functions
+- Publicly demonstrated by Klink & Wälde (28C3)
+- Led to security patches across ecosystems
 
 [HashDoS disclosure (oCERT)](https://ocert.org/advisories/ocert-2011-003.html)
 
@@ -72,10 +69,11 @@ img[alt~="title-image"] {
 
 ### Key concepts
 
-- **Hashing** – transforming input into a fixed-size value
-- **Hash collisions** – different inputs produce the same hash
-- **Hash-based collections** – like `std::unordered_map`
-- **HashDoS** – Denial of Service via excessive collisions
+- **Hashing** – maps input to fixed-size value
+- **Collisions** – different inputs, same hash
+- **Hash-based collections** – e.g. `unordered_map`
+  - Collisions are expected and handled (e.g. linked list in a bucket)
+- **HashDoS** – attacker deliberately triggers worst-case behavior
 
 ---
 
@@ -87,6 +85,9 @@ img[alt~="title-image"] {
 - Hash table becomes unbalanced
 - Lookup times degrade from O(1) to O(n)
 - Server resources are exhausted
+- Affects:
+  - Web servers, APIs, microservices, ...
+  - Any app processing untrusted input in `unordered_map` or similar
 
 ---
 
@@ -106,14 +107,19 @@ img[alt~="title-image"] {
 
 ## First: demonstrating hash collisions
 
-- All hash functions have collisions
-- The question is: how hard are they to find?
+- Collisions exist in **every** hash function
+- Finding them **is not easy** in practice
+- Two approaches:
+  - Exploit structural weakness (e.g. poor mixing)
+  - Brute force (requires CPU/GPU time)
+- I hoped to find a ready-made FNV-1a multicollision list...
+  > but apparently Google doesn’t index the darknet 🙂
 
 ---
 
 ## Simulating the HashDoS attack
 
-- Using a bad hash function: only first 6 characters
+- Using a bad hash function: `hash(substr(0,6))`
 - Easy to create **multi-collisions**
 - Inputs with same hash value → stress the server
 
@@ -127,6 +133,25 @@ img[alt~="title-image"] {
 - ✅ Sanitize input – whitelist values, limit sizes
 - ✅ Use beter hash functions if needed and seed it (xxHash, siphash)
 - ✅ Use collections **not based on hashes** – e.g. `std::map`, `std::multimap`
+
+---
+
+## Custom hash function example
+
+```cpp
+struct MyHash {
+    size_t operator()(const std::string& str) const {
+        XXH3_64bits_withSeed(str.c_str(), str.length(), seed);
+    }
+
+    size_t seed = std::random_device{}(); // Randomized seed
+};
+```
+
+```cpp
+// use MyHash as a template parameter
+std::unordered_map<std::string, int, MyHash> collection;
+```
 
 ---
 
@@ -146,11 +171,9 @@ img[alt~="title-image"] {
 ## 6. Resources & Links
 
 - [Hash DoS Attack | PPT](https://www.slideshare.net/slideshow/hash-dos-attack/30145445)
-- [Collision Attack - Wikipedia](https://en.wikipedia.org/wiki/Collision_attack)
-- [SipHash - Wikipedia](https://en.wikipedia.org/wiki/SipHash)
-- [MurmurHash - Wikipedia](https://en.wikipedia.org/wiki/MurmurHash)
-- [Breaking Hash Functions - orlp.net](https://orlp.net/blog/breaking-hash-functions/)
 - [CVE-2011-3414 - Microsoft Security](https://learn.microsoft.com/en-us/security-updates/securitybulletins/2011/ms11-100#collisions-in-hashtable-may-cause-dos-vulnerability---cve-2011-3414)
+- [Breaking Hash Functions - orlp.net](https://orlp.net/blog/breaking-hash-functions/)
+- [xxHash - example of usage](https://xxhash.com/doc/v0.8.2/group___x_x_h3__family.html#gaa895f02acfc127b1d34d0d558a6773b0)
 
 ---
 
