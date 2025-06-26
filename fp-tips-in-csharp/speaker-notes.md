@@ -1,18 +1,18 @@
-# Speaker Notes for "`N` tips to improve your C# code using `FP`"
+# Speaker Notes for "N tips to improve your C# code using FP"
 
 ## Slide 1: Title
 
-Hello everyone, and thank you for joining me today. My name is Pavel Kučera, and I originally promised to give you 7 tips to improve your C# code using functional programming. Butt, using some clever optimization techniques, I managed to narrow it down to just 2tips. So, let's get started!
+Hello everyone, and thank you for joining me today. My name is Pavel Kučera, and I originally promised to give you 7 tips to improve your C# code using functional programming. But, using some clever optimization techniques, I managed to narrow it down to just 2 tips. So, let's get started!
 
 ---
 
 ## Slide 2: Tip #1: Use Pure Functions
 
-Shortly after the lunch, let’s start with something easy to digest. The first tip is to **use pure functions.**
+Let’s start with something easy to digest. The first tip is to **use pure functions.**
 
 This one is a kind of captain obvious. You don't have to be FP enthusiast to know that functional programming is about functions, right? But let's see if we could learn something new anyway.
 
-Just a quick recap: Pure functions are functions that have no side effects, meaning they don’t modify any external state or rely on it. They always produce the same output for the same input (they are stateless and deterministic).
+Just a quick recap: Pure functions are functions that have no side effects, meaning they don’t modify any external state or rely on it. They always produce the same output for the same input—they are stateless and deterministic.
 
 This makes them easier to test, reason about, and reuse.
 
@@ -20,19 +20,19 @@ And also fun to work with!
 
 ---
 
-## Slide 3: Use Pure Functions - even in non-FP code base
+## Slide 3: Use Pure Functions - even in a non-FP codebase
 
-Here comes the point of the first tip: You don’t have to rewrite your whole codebase in a functional style. Even if your code base is huge, in legacy technology, and far from being functional, you can still benefit from using pure functions.
+Here’s the point of the first tip: You don’t have to rewrite your whole codebase in a functional style. Even if your codebase is huge, in legacy technology, and far from being functional, you can still benefit from using pure functions.
 
-Whenever you modify your code, there's always a opportunity to introduce pure functions. You can isolate new code in pure functions, even if the rest of the code is not functional. This works great for  bugfixes but for adding new features as well. It’s a way to improve your codebase gradually, without a big rewrite.
+Whenever you modify your code, there's always an opportunity to introduce pure functions. You can isolate new code in pure functions, even if the rest of the code is not functional. This works great for bugfixes and for adding new features as well. It’s a way to improve your codebase gradually, without a big rewrite.
 
 ---
 
 ## Slide 4: Real world example - PeakFinder
 
-Here’s a real-world example I found in the microanalysis C++ Quant. I only rewrote it to C#. The class PeakFinder is, I believe, a good example of how not to use OOP. But I'm not going to blame the code, nor I'm going to blame OOP. I just want to demonstrate here that even heavily OOP code can be easily integrated with pure functions.
+Here’s a real-world example I found in the microanalysis C++ Quant project. I just rewrote it in C#. The class PeakFinder is, I believe, a good example of how not to use OOP. But I'm not going to blame the code, nor am I going to blame OOP. I just want to demonstrate that even heavily OOP code can be easily integrated with pure functions.
 
-As you can see, to use the PeakFinder class, you need to create an instance, set over-voltage, set sensitivity, even set the spectrum you want to search the peaks in, and then call the GetPeaks method providing a list of reference elements to get the peaks.
+As you can see, to use the PeakFinder class, you need to create an instance, set over-voltage, set sensitivity, even set the spectrum you want to search the peaks in, and then call the GetPeaks method, providing a list of reference elements to get the peaks.
 
 Alles klar?
 
@@ -40,15 +40,15 @@ Alles klar?
 
 ## Slide 5: Example - new task
 
-Now, let’s say you get a new requirement: “We need to implement a maximum energy limit for detected peaks.”. A client code wants to get a list of peaks that are below a certain energy threshold.
+Now, let’s say you get a new requirement: “We need to implement a maximum energy limit for detected peaks.” The client code wants to get a list of peaks that are below a certain energy threshold.
 
 ---
 
 ## Slide 6: Temptation: Follow the existing pattern
 
-The developer's temptation when modifying any code is to follow the existing patterns. And that's for a good reason! We want our codebase to be consistent. For the same reason, other developer may be tempted to rewrite the whole class in a way they think is better (e.g. FP). But this is almost always not the best approach - it can be costly and introduce bugs.
+The developer's temptation when modifying any code is to follow the existing patterns. And that's for a good reason! We want our codebase to be consistent. For the same reason, another developer may be tempted to rewrite the whole class in a way they think is better (e.g., FP). But this is almost never the best approach—it can be costly and introduce bugs.
 
-So let's say you follow your instincts, you follow the pattern you see around. You add a new property, MaxEnergy and find the right place to chek it inside the big bulky GetPeaks method. The changeset is pretty small (like 2 lines of code) so there is a good chance it passes the code review and gets merged. So is there anything wrong with this approach?
+So let's say you follow your instincts, you follow the pattern you see around. You add a new property, MaxEnergy, and find the right place to check it inside the big, bulky GetPeaks method. The changeset is pretty small (like 2 lines of code), so there is a good chance it passes the code review and gets merged. So is there anything wrong with this approach?
 
 ---
 
@@ -56,15 +56,15 @@ So let's say you follow your instincts, you follow the pattern you see around. Y
 
 I think there is!
 
-- Silent filtering logic buried in loop
+- Silent filtering logic buried in a loop
 - Behavior changes based on hidden state
-- Poor reusability & testability
+- Poor reusability and testability
 - Level of nesting increases
 - Complexity increases
 - SRP violated
 - You name it...
 
-This is, basically, how technical debt is created.
+This is basically how technical debt is created.
 
 Can we do better?
 
@@ -80,13 +80,13 @@ A better solution is to write a pure function that filters the peaks by energy. 
 
 ## Slide 9: Benefits of Pure Functions
 
-The benefits of pure functions are clear: each function has a single responsibility, it’s easy to test, easy to reuse, and easy to read. So using pure function, we were able to implement the new feature without modifying the existing code, and without introducing any side effects.
+The benefits of pure functions are clear: each function has a single responsibility, it’s easy to test, easy to reuse, and easy to read. By using a pure function, we were able to implement the new feature without modifying the existing code and without introducing any side effects.
 
 ---
 
 ## Slide 10: Performance matters in FP world too - Lazy evaluation
 
-One may object that our FP solution introduced an unnecessary memory overhead. And it looks like it does. We create a new list, fill it with all the peaks and then filter it. But that's not because of FP but because of the naive way we implemented it. With a little bit of care, we can make it more efficient by using lazy evaluation. Now we modify the original code but we do not touch the logic. At least we hope we do not. In complicated spaghetti code, it may be hard to tell.
+One may object that our FP solution introduced unnecessary memory overhead. And it looks like it does. We create a new list, fill it with all the peaks, and then filter it. But that's not because of FP, but because of the naive way we implemented it. With a little bit of care, we can make it more efficient by using lazy evaluation. Now we modify the original code, but we do not touch the logic. At least we hope we do not. In complicated spaghetti code, it may be hard to tell.
 
 ---
 
@@ -98,7 +98,7 @@ So, to wrap up this first tip: Pure functions can be used anywhere, in any codeb
 
 ## Slide: Tip #2: Try F# - What is F#?
 
-Now, let’s move to the last tip, and the one I want to put the most weight on: Try F#!.
+Now, let’s move to the last tip, and the one I want to put the most weight on: Try F#.
 
 What is F#?
 
@@ -110,7 +110,7 @@ It works seamlessly with C# and all .NET libraries, so you can easily use all th
 
 ## Slide: Why use F#?
 
-I think, for C# developpers, F# is the most straightforward way to get into functional programming. It’s a great way to learn functional programming concepts, like immutability, higher-order functions, pattern matching, and more. I would definitely recommend trying F# for its awesome type system, for its concise syntax.
+I think, for C# developers, F# is the most straightforward way to get into functional programming. It’s a great way to learn functional programming concepts, like immutability, higher-order functions, pattern matching, and more. I would definitely recommend trying F# for its awesome type system and its concise syntax.
 
 ---
 
