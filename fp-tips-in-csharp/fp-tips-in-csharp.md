@@ -66,12 +66,12 @@ img[alt~="title-image"] {
 
 ---
 <!-- footer: Tip #1: Use Pure Functions -->
-### Use Pure Functions - even in non-FP code base
+### Use Pure Functions - even in a non-FP code base
 
 - 🧩 You don't need to rewrite everything to FP
 - 🏝️ Isolate new code in pure functions
-- ✅ works great for
-  - 🔧 Bugfixing
+- ✅ Works great for:
+  - 🔧 Bug fixing
   - 🌱 Adding new functionality
 
 ---
@@ -130,7 +130,7 @@ public class PeakFinder
 
 ### 💥 Why this is bad
 
-❌ Silent filtering logic buried in loop
+❌ Silent filtering logic buried in the loop
 ❌ Behavior changes based on hidden state
 ❌ Poor reusability & testability
 ❌ Level of nesting increases
@@ -138,11 +138,11 @@ public class PeakFinder
 ❌ SRP violated
 ❌ You name it...
 
-This is how technical debt begins (and grows)
+This is how technical debt begins (and grows).
 
 ---
 
-### ✅ Solution: Use pure function
+### ✅ Solution: Use a pure function
 
 ```csharp
 public static class PeakFilter
@@ -167,7 +167,7 @@ public class PeakFinder
 
 ### ✅ Benefits of Pure Functions
 
-Benefits of the FP Way
+Benefits of the FP Way:
 
 - 🔍 Focus: One function = one responsibility (SRP)
 - 🧪 Testability: Simply write `PeakFilter.ByMaxEnergy` unit tests
@@ -178,7 +178,7 @@ Benefits of the FP Way
 
 ---
 
-### ✅ Performance matters in FP world too - Lazy evaluation
+### ✅ Performance matters in the FP world too - Lazy evaluation
 
 ```csharp
 public IEnumerable<Peak> GetPeaks(IEnumerable<Reference> refs)
@@ -201,7 +201,7 @@ public static class PeakFilter
 
 ---
 
-### Tip #1: Use Pure Functions - Conclusion
+### Tip #1: Use Pure Functions – Conclusion
 
 - PF can be used anywhere
 - PF should be the first choice for new code
@@ -237,7 +237,7 @@ public static class PeakFilter
 
 ### How to use F#?
 
-Getting started
+Getting started:
 
 - `dotnet new console -lang F#`
 - Try [F# for fun and profit](https://fsharpforfunandprofit.com/)
@@ -250,7 +250,7 @@ Getting started
 
 ---
 
-### Tip #2: Try F# - Conclusion
+### Tip #2: Try F# – Conclusion
 
 - F# is a great way to expand your programming horizons
 - You don’t have to switch jobs or rewrite your codebase
