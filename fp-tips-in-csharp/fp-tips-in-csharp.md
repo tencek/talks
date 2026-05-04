@@ -255,3 +255,12 @@ Getting started:
 - F# is a great way to expand your programming horizons
 - You don’t have to switch jobs or rewrite your codebase
 - Just try it out, and see what you learn!
+
+---
+
+## Thank you
+
+- Pure function is a programmer's best friend.
+- F# is a great way to learn functional programming concepts.
+
+- Questions?

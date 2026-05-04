@@ -90,13 +90,13 @@ One may object that our FP solution introduced unnecessary memory overhead. And 
 
 ---
 
-## Slide: Tip #1: Use Pure Functions - Conclusion
+## Slide 11: Tip #1: Use Pure Functions - Conclusion
 
 So, to wrap up this first tip: Pure functions can be used anywhere, in any codebase. They should be your first choice when writing new code, because they help improve code quality, make your code easier to test, and reduce bugs. Even if you’re not doing full-on functional programming, just using more pure functions will make a big difference over time.
 
 ---
 
-## Slide: Tip #2: Try F# - What is F#?
+## Slide 12: Tip #2: Try F# - What is F#?
 
 Now, let’s move to the last tip, and the one I want to put the most weight on: Try F#.
 
@@ -108,18 +108,27 @@ It works seamlessly with C# and all .NET libraries, so you can easily use all th
 
 ---
 
-## Slide: Why use F#?
+## Slide 13: Why use F#?
 
 I think, for C# developers, F# is the most straightforward way to get into functional programming. It’s a great way to learn functional programming concepts, like immutability, higher-order functions, pattern matching, and more. I would definitely recommend trying F# for its awesome type system and its concise syntax.
 
 ---
 
-## Slide: How to use F#?
+## Slide 14: How to use F#?
 
 Getting started is easy. If you have the .NET SDK installed, you can create a new F# project with the command: dotnet new console -lang F#. There are great resources online, like F# for fun and profit, the official F# docs, and dotnetfiddle, which lets you play with F# in your browser.
 
 ---
 
-## Slide: Tip #2: Try F# - Conclusion
+## Slide 15: Tip #2: Try F# - Conclusion
 
 So, to wrap up: F# is a great way to expand your programming horizons. You don’t have to switch jobs or rewrite your codebase. Just try it out, and see what you learn! I promise, it will make you a better developer, no matter what language you use.
+
+## Slide 16: Thank You
+
+Thank you for your attention! Here's what I wanted to tell you in two bullets:
+
+- Pure function is a programmer's best friend. You can use them anywhere, anytime, and they will make your code better.
+- F# is a great way to learn functional programming concepts. So all the FP tips I missed today, you can learn by trying F#.
+
+In case there are questions, I will be happy to answer them now.
