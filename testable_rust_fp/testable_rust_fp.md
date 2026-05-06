@@ -243,10 +243,10 @@ impl PullRequest {
 
 ```
 running 4 tests
-test pr1::tests::test_new_pr_is_in_new_state ... ok
-test pr1::tests::test_pr_close_closes_the_pr ... ok
-test pr1::tests::test_pr_open_opens_the_pr ... ok
-test pr1::tests::test_pr_approve_approves_the_pr ... ok
+test pr_naive::tests::test_new_pr_is_in_new_state ... ok
+test pr_naive::tests::test_pr_close_closes_the_pr ... ok
+test pr_naive::tests::test_pr_open_opens_the_pr ... ok
+test pr_naive::tests::test_pr_approve_approves_the_pr ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 ```
@@ -321,18 +321,18 @@ impl PullRequestStateMachine {
 > cargo build
 
 
-error[E0004]: non-exhaustive patterns: `(pr2::State::Approved(_), _)` and `(pr2::State::Closed(_), _)` not covered
-  --> src\pr2.rs:31:15
+error[E0004]: non-exhaustive patterns: `(pr::State::Approved(_), _)` and `(pr::State::Closed(_), _)` not covered
+  --> src\pr.rs:31:15
    |
 31 |         match (state, action) {
-   |               ^^^^^^^^^^^^^^^ patterns `(pr2::State::Approved(_), _)` and `(pr2::State::Closed(_), _)` not covered
+   |               ^^^^^^^^^^^^^^^ patterns `(pr::State::Approved(_), _)` and `(pr::State::Closed(_), _)` not covered
    |
-   = note: the matched value is of type `(pr2::State, pr2::Action)`
+   = note: the matched value is of type `(pr::State, pr::Action)`
 help: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern, a match arm with 
 multiple or-patterns as shown, or multiple match arms
    |
 36 ~             (State::Open, Action::Close { reason }) => State::Closed(Reason { message: reason }),
-37 ~             (pr2::State::Approved(_), _) | (pr2::State::Closed(_), _) => todo!(),
+37 ~             (pr::State::Approved(_), _) | (pr::State::Closed(_), _) => todo!(),
    |
 ```
 
@@ -555,7 +555,7 @@ in the production code (in `apply_exhaustive`)!
 
 ### The best tests are those that we don't need to write!
 
-FP + Rust can halp us to write code that is easy to reason about
+FP + Rust can help us to write code that is easy to reason about
 even without tests.
 
 ### TLDR
@@ -563,52 +563,243 @@ Separate the logic into pure functions.
 
 ------------------------------------------------------------------
 
-- Parametrized tests
-  - rstest crate
-  - fixtures - for common test data
-  - once - for expensive setup
-  
-------------------------------------------------------------------
+## Tip - Parametrized tests
 
-- asserting floats
-  - approx
-  - assert_abs_diff_eq
-  - assert_relative_eq
-  - impl RelativeEq, impl AbsDiffEq for new-types
-  - new-type idiom
+Use [`rstest`](https://docs.rs/rstest/latest/rstest/) when the test shape is the same,
+but the inputs change.
 
-------------------------------------------------------------------
+```rust
+use rstest::rstest;
 
-- logging and tracing in tests
-  - test_log crate
-  - `#[test_log::test]` or `#[test_log::test(rstest)]`
-  - export RUST_LOG=trace
-  - cargo test --package quant --lib -- quantify::quantifier::tests::test_quantify_albite --exact --show-output
+#[rstest]
+#[case(State::New, true)]
+#[case(State::Open, false)]
+#[case(State::Approved(Approval { approver: "Alice".into(), message: "LGTM".into() }), false)]
+#[case(State::Closed(Reason { message: "Merged".into() }), false)]
+fn open_is_allowed(#[case] state: State, #[case] expected: bool) {
+    let actual = PullRequestStateMachine::apply(&state, Action::Open)
+        .is_ok();
 
-------------------------------------------------------------------
-
-- Property-based testing
-  - proptest
+    assert_eq!(expected, actual);
+}
+```
 
 ------------------------------------------------------------------
 
-- Inline unit testy generují spoustu šumu v produkčním kódu - přesunout?
+## Tip - Fixtures
+
+Use [`rstest` fixtures](https://docs.rs/rstest/latest/rstest/attr.fixture.html)
+for common setup. Keep only the interesting variation in the test.
+
+```rust
+#[fixture]
+fn pr() -> PullRequest {
+    PullRequest::new("repo".into(), "topic".into(), "main".into())
+}
+
+#[rstest]
+fn new_pr_is_new(pr: PullRequest) {
+    assert_eq!(State::New, pr.state);
+}
+```
 
 ------------------------------------------------------------------
 
-- Documentation testing
+## Tip - Expensive setup
+
+Use `#[once]` for read-only fixtures that are expensive to create.
+
+```rust
+#[fixture]
+#[once]
+fn repo() -> Repository {
+    Repository::clone_from("git@github.com:tencek/talks.git")
+}
+
+#[rstest]
+fn new_pr_targets_main(repo: &Repository) {
+    let pr = repo.open_pr("feature");
+
+    assert_eq!("main", pr.dst_branch);
+}
+```
 
 ------------------------------------------------------------------
 
-- integration tests
-  - each file in `tests/` is a separate crate
-  - can be used for end-to-end tests
-  - can use modules but it is inconvenient - use separate test_support crate
+## Tip - Assert floats?
+
+What is wrong with this test?
+
+```rust
+#[test]
+fn calculates_approval_ratio() {
+    let approved = 1.0_f64;
+    let total = 10.0_f64;
+
+    assert_eq!(0.1, approved / total);
+}
+```
+
+Why?
 
 ------------------------------------------------------------------
 
-- Data drivren tests
-  - json generated by an external tool - \assets\test_data\test_parity\expected_results.json
-  - build.rs to 
-    - generate the test data
-    - compile in the test data
+## Tip - Assert floats
+
+Use [`approx`](https://docs.rs/approx/latest/approx/) instead of `assert_eq!`
+for floating point values.
+
+```rust
+use approx::{assert_abs_diff_eq, assert_relative_eq};
+
+let ratio = approval_ratio(1, 10);
+assert_abs_diff_eq!(0.1, ratio, epsilon = 1e-9);
+
+let score = reviewer_confidence(&pull_request);
+assert_relative_eq!(0.95, score, max_relative = 1e-6);
+```
+
+- absolute diff: constant magnitude, e.g 0.0 - 1.0
+- relative diff: good when magnitude changes
+
+------------------------------------------------------------------
+
+## Tip - Domain floats
+
+For new-types, implement `AbsDiffEq` / `RelativeEq` once.
+
+```rust
+#[derive(Debug, Copy, Clone, PartialEq)]
+struct ApprovalRatio(f64);
+
+impl approx::AbsDiffEq for ApprovalRatio {
+    type Epsilon = f64;
+
+    fn default_epsilon() -> f64 { 1e-9 }
+
+    fn abs_diff_eq(&self, other: &Self, epsilon: f64) -> bool {
+        self.0.abs_diff_eq(&other.0, epsilon)
+    }
+}
+```
+
+------------------------------------------------------------------
+
+## Tip - Logs in tests - code
+
+Put the context in production code, e.g. with `#[instrument]`.
+
+```rust
+use tracing::{debug, instrument};
+
+#[instrument(skip(self), fields(repo = %self.repo, state = ?self.state))]
+fn apply(&mut self, action: Action) {
+    debug!(?action, "applying PR action");
+
+    match PullRequestStateMachine::apply(&self.state, action) {
+        Ok(new_state) => self.state = new_state,
+        Err(error) => tracing::warn!(%error, "keeping current state"),
+    }
+}
+```
+
+------------------------------------------------------------------
+
+## Tip - Logs in tests - test
+
+Use [`test-log`](https://docs.rs/test-log/latest/test_log/) to see logs emitted
+by the production code.
+
+```rust
+#[test_log::test]
+fn cannot_approve_new_pr() {
+    let mut pr = PullRequest::new("talks".into(), "topic".into(), "main".into());
+
+    pr.approve("Alice".into(), "LGTM".into());
+
+    assert_eq!(State::New, pr.state);
+}
+```
+
+```powershell
+$env:RUST_LOG = "trace"
+cargo test cannot_approve_new_pr -- --show-output
+```
+
+With `rstest`: `#[test_log::test(rstest)]`
+
+------------------------------------------------------------------
+
+## Tip - Property-based tests
+
+Use [`proptest`](https://proptest-rs.github.io/proptest/intro.html) for property-based testing.
+
+It allows to test that certain properties of your code hold for arbitrary inputs, and if a
+failure is found, automatically finds the minimal test case to reproduce the problem.
+
+```rust
+    use proptest::prelude::*;
+    proptest! {
+        #[test]
+        fn pr_new_never_crashes(repo in ".{1,80}", src in ".{1,80}", dst in ".{1,80}") {
+            let _ = PullRequest::new(repo.clone(), src.clone(), dst.clone());
+        }
+    }
+```
+
+I but a subtle bug in `PullRequest::new` logging that causes it to panic when the repo name is empty or weird.
+Will proptest find it? Let's see!
+
+------------------------------------------------------------------
+
+## Tip - Documentation tests
+
+Use [rustdoc doctests](https://doc.rust-lang.org/rustdoc/write-documentation/documentation-tests.html)
+for examples that are part of the public contract.
+
+````rust
+/// Opens a new pull request.
+///
+/// ```
+/// use my_crate::PullRequest;
+///
+/// let mut pr = PullRequest::new("repo".into(), "src".into(), "main".into());
+/// pr.open();
+/// assert!(pr.is_open());
+/// ```
+pub fn open(&mut self) {
+    // ...
+}
+````
+
+------------------------------------------------------------------
+
+## Tip - Integration tests
+
+Cargo treats each `tests/*.rs` file as a separate crate.
+
+```rust
+// tests/pull_request.rs
+use my_crate::{Action, PullRequestStateMachine, State};
+
+#[test]
+fn opening_new_pr() {
+    let actual = PullRequestStateMachine::apply(&State::New, Action::Open);
+    assert_eq!(Ok(State::Open), actual);
+}
+```
+
+- tests public API behavior
+- good place for end-to-end scenarios
+- use a `test_support` crate for shared helpers
+
+------------------------------------------------------------------
+
+## Tip - Data-driven tests
+
+Use data files when expected results come from an external source.
+
+- keep source data readable in `assets/`
+- parse into typed structs with [`serde_json`](https://docs.rs/serde_json/latest/serde_json/)
+- use [`include_str!`](https://doc.rust-lang.org/std/macro.include_str.html) for small deterministic files
+

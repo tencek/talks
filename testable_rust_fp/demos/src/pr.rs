@@ -1,7 +1,7 @@
 //! The naive implementation of a pull request state machine
 
 use thiserror::Error;
-use tracing::{debug, error};
+use tracing::{Level, debug, error, instrument};
 
 #[derive(Debug, Clone)]
 pub struct PullRequest {
@@ -69,10 +69,12 @@ impl PullRequestStateMachine {
         }
     }
 
+    #[instrument(level = Level::TRACE, err(Display, level = Level::ERROR))]
     pub fn apply_exhaustive(
         state: &State,
         action: Action,
     ) -> Result<State, PullRequestStateMachineError> {
+        debug!(?action, ?state, "applying PR action");
         match (state, action) {
             // state: New
             (State::New, Action::Open) => Ok(State::Open),
@@ -116,6 +118,13 @@ impl PullRequestStateMachine {
 
 impl PullRequest {
     pub fn new(repo: String, src_branch: String, dst_branch: String) -> Self {
+        // a subtle bug - will proptest find it?
+        let shortcut = repo.as_str()[0..1].to_string();
+
+        debug!(
+            "Creating new PR for repo {}, from {} to {}, shortcut is {}",
+            repo, src_branch, dst_branch, shortcut
+        );
         PullRequest {
             repo,
             src_branch,
@@ -124,6 +133,15 @@ impl PullRequest {
         }
     }
 
+    /// Opens a new pull request.
+    ///
+    /// ```
+    /// use demos::pr::{PullRequest, State};
+    ///
+    /// let mut pr = PullRequest::new("repo".into(), "src".into(), "main".into());
+    /// pr.open();
+    /// assert_eq!(State::Open, pr.state);
+    /// ```
     pub fn open(&mut self) {
         self.apply(Action::Open);
     }
@@ -139,7 +157,7 @@ impl PullRequest {
     fn apply(&mut self, action: Action) {
         debug!("Performing action {:?} in state {:?}", action, self.state);
 
-        match PullRequestStateMachine::apply(&self.state, action) {
+        match PullRequestStateMachine::apply_exhaustive(&self.state, action) {
             Ok(new_state) => self.state = new_state,
             Err(e) => {
                 error!(
@@ -171,4 +189,46 @@ pub struct Reason {
 }
 
 #[cfg(test)]
-mod tests {}
+mod tests {
+    use super::*;
+    use rstest::{fixture, rstest};
+    use test_log;
+
+    #[fixture]
+    fn new_pr() -> PullRequest {
+        PullRequest::new("talks".into(), "topic".into(), "main".into())
+    }
+
+    #[test_log::test(rstest)]
+    #[case::new(State::New, true)]
+    #[case::open(State::Open, false)]
+    #[case::approved(State::Approved(Approval { approver: "Alice".into(), message: "LGTM".into() }), false)]
+    #[case::closed(State::Closed(Reason { message: "Merged".into() }), true)]
+    fn open_is_allowed(#[case] state: State, #[case] expected: bool) {
+        let actual = PullRequestStateMachine::apply_exhaustive(&state, Action::Open).is_ok();
+
+        assert_eq!(expected, actual);
+    }
+
+    #[test_log::test]
+    fn cannot_approve_new_pr() {
+        let mut pr = PullRequest::new("talks".into(), "topic".into(), "main".into());
+
+        pr.approve("Alice".into(), "LGTM".into());
+
+        assert_eq!(State::New, pr.state);
+    }
+
+    #[test_log::test(rstest)]
+    fn new_pr_is_new(new_pr: PullRequest) {
+        assert_eq!(State::New, new_pr.state);
+    }
+
+    use proptest::prelude::*;
+    proptest! {
+        #[test]
+        fn pr_new_never_crashes(repo in ".{1,80}", src in ".{1,80}", dst in ".{1,80}") {
+            let _ = PullRequest::new(repo.clone(), src.clone(), dst.clone());
+        }
+    }
+}
