@@ -1,0 +1,142 @@
+what function is
+	pure functions
+		- no side effects
+		- output defined for every input
+	https://fsharpforfunandprofit.com/posts/mathematical-functions/
+	
+	functions as input
+
+	functions as output
+
+let keyword comes from math and functional languages
+let coffee_machine = coffee_machine.with_settings(Strong)
+
+The “unit” type
+	
+partial application, currying
+	https://chatgpt.com/share/674f2870-bb4c-8003-a106-21921dbb24be
+	https://fsharpforfunandprofit.com/posts/currying/
+
+function composition
+	https://chatgpt.com/share/674f461c-2448-8003-a98b-1bec4bf1e347
+	https://fsharpforfunandprofit.com/posts/function-composition/
+	
+defining functions
+	https://fsharpforfunandprofit.com/posts/defining-functions/
+
+
+
+pattern matching
+
+Nested Functions
+
+/// Approximation of the error function.
+///
+/// # Arguments
+///
+/// * `x` - The value to calculate the R function for.
+///
+/// # Returns
+///
+/// The value of the R function for the given value.
+pub fn erf_polynomial(x: f64) -> f64 {
+    let p = [
+        106.1405429,
+        -145.3152027,
+        142.1413741,
+        -28.4496736,
+        25.4829592,
+        0.0,
+    ];
+    let t = 1.0 / (1.0 + 0.3275911 * x);
+    let mut result = 0.0;
+
+    for &coeff in &p {
+        result = result * t + coeff;
+    }
+
+    result * 0.01
+}
+
+///////////////////////
+
+/// Approximation of the error function.
+///
+/// # Arguments
+///
+/// * `x` - The value to calculate the R function for.
+///
+///
+/// # Returns
+/// The value of the R function for the given value.
+pub fn erf_polynomial(x: f64) -> f64 {
+    let p = [
+        106.1405429,
+        -145.3152027,
+        142.1413741,
+        -28.4496736,
+        25.4829592,
+        0.0,
+    ];
+    let t = 1.0 / (1.0 + 0.3275911 * x);
+    let result = p.iter().fold(0.0, |acc, &coeff| acc * t + coeff);
+    result * 0.01
+}
+
+// kdy se to vyhodnocuje?
+
+// FP nás ponouká psát kód obecněji, zamyslet se nad "interfaces"
+// usnadňuje testování
+ * make_breakfast() - wrong, not IOC
+ * make_breakfast(espresso: Espresso) - co když chci Ristretto?
+ * make_breakfast(coffee: Coffee) - co když vůbec kafe nechci?
+ * make_breakfast(coffee: Option<Coffee>) - co když to zjistím až při přípravě (třeba selže příprava toastu), to pak to kafe musím vylít
+ * make_breakfast(coffee_machine: &CoffeeMachine) - CofeeMachine nemusí být jediný způsob, jak udělat kafe (turek, džezva). Taky zkonstruovat CofeeMachine může být drahé a dělat to s každým testem je nepraktické.
+ * make_breakfast<F>(make_coffee: F) where F: Fn() - Result<Coffee, CoffeeError>
+ 
+ // impl Iterator, impl Iter, obecně impl 
+ 
+ // let ple_kev = PrincipleLineEnergy::from_kev;
+ 
+ ////////////////////
+ 
+ 
+ 
+ ///////////////////////
+ 
+ https://www.reddit.com/r/rust/comments/v65k50/functional_programming_in_rust/
+ https://kerkour.com/rust-functional-programming
+ 
+ /////////////////////////
+ 
+ option.map(SomethingElse::new)
+ 
+ result.map_err(ChipSddAmptekEfficiencyError::EfficiencyByTableError)
+ 
+ // partial functions
+ add x y 
+ add x
+ 
+ ////////////////////////
+ 
+ Algebraic data types - zmínit, že 
+ 
+ //////////////////////
+ 
+ poslední výraz je "return"
+ 
+ //////////////////////
+ 
+ lze vytvořit velmi snadno nový typ
+ 
+ //////////////////////
+ 
+ data are just data - no inheritance, no need to provide getters
+ 
+ //////////////////////
+ 
+ zkusit nahradit HashMap<(Element, Shell), T> něčím jiným
+ 
+ //////////////////////
+ 
+ iterators are lazy and do nothing unless consumed!
